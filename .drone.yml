@@ -33,7 +33,6 @@ steps:
   - python monthly-report.py
   depends_on:
   - configure mail
-  network_mode: host
 
 trigger:
   event:
