@@ -3,11 +3,6 @@ type: docker
 name: firefly update
 
 steps:
-- name: install dependencies
-  image: python
-  commands:
-  - pip install -r requirements.txt
-
 - name: configure mail
   image: alpine
   settings:
@@ -29,9 +24,9 @@ steps:
 - name: send mail
   image: python
   commands:
+  - pip install -r requirements.txt
   - python monthly-report.py
   depends_on:
-  - install dependencies
   - configure mail
 
 trigger:
