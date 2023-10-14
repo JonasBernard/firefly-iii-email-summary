@@ -25,21 +25,7 @@ steps:
     password:
       from_secret: ORG_MAIL_SMTP_PASSWORD
   commands:
-  - echo "---
-  smtp:
-    server: $PLUGIN_HOST
-    port: 25
-    starttls: True        # Use STARTTLS
-    authentication: True  # Login with (the following) username and password
-    user: $PLUGIN_USERNAME
-    password: $PLUGIN_PASSWORD
-  email:
-    from: $PLUGIN_FROM.ADDRESS
-    to:
-      - $PLUGIN_RECIPIENTS
-  firefly-url: '$FIREFLY_URL'
-  accesstoken: '$FIREFLY_TOKEN'
-  currency: 'EUR'" > config.yaml
+  - echo -e "---\nsmtp:\n  server: $PLUGIN_HOST\n  port: 25\n  starttls: True\n  authentication: True\n  user: $PLUGIN_USERNAME\n  password: $PLUGIN_PASSWORD\nemail:\n  from: $PLUGIN_FROM.ADDRESS\n  to:\n    - $PLUGIN_RECIPIENTS\nfirefly-url: '$FIREFLY_URL'\naccesstoken: '$FIREFLY_TOKEN'\ncurrency: 'EUR'" > config.yaml
 - name: send mail
   image: python
   commands:
