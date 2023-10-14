@@ -1,0 +1,56 @@
+kind: pipeline
+type: docker
+name: firefly update
+
+steps:
+- name: install dependencies
+  image: python
+  commands:
+  - pip install -r requirements.txt
+
+- name: configure mail
+  image: alpine
+  settings:
+    from.address:
+      from_secret: ORG_MAIL_FROM_ADDRESS
+    from.name:
+      from_secret: ORG_MAIL_FROM_NAME
+    host: 
+      from_secret: ORG_MAIL_SMTP_SERVER
+    recipients_only: true
+    recipients:
+      from_secret: ORG_MAIL_RECIPIENTS
+    username:
+      from_secret: ORG_MAIL_SMTP_USERNAME
+    password:
+      from_secret: ORG_MAIL_SMTP_PASSWORD
+  commands:
+  - echo "---
+  smtp:
+    server: $PLUGIN_HOST
+    port: 25
+    starttls: True        # Use STARTTLS
+    authentication: True  # Login with (the following) username and password
+    user: $PLUGIN_USERNAME
+    password: $PLUGIN_PASSWORD
+  email:
+    from: $PLUGIN_FROM.ADDRESS
+    to:
+      - $PLUGIN_RECIPIENTS
+  firefly-url: '$FIREFLY_URL'
+  accesstoken: '$FIREFLY_TOKEN'
+  currency: 'EUR'" > config.yaml
+- name: send mail
+  image: python
+  commands:
+  - python monthly-report.py
+  depends_on:
+  - install dependencies
+  - configure mail
+
+trigger:
+  event:
+    include:
+    - promote
+    - custom
+    - cron
