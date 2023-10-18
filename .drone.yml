@@ -24,13 +24,15 @@ steps:
     fireflytoken:
       from_secret: FIREFLY_TOKEN
   commands:
-  - "echo -e \"---\nsmtp:\n  server: $PLUGIN_HOST\n  port: 25\n  starttls: True\n  authentication: True\n  user: $PLUGIN_USERNAME\n  password: $PLUGIN_PASSWORD\nemail:\n  from: $PLUGIN_FROMADDRESS\n  to:\n    - $PLUGIN_RECIPIENTS\nfirefly-url: '$PLUGIN_FIREFLYURL'\naccesstoken: '$PLUGIN_FIREFLYTOKEN'\ncurrency: 'EUR'\" > config.yaml"
+  - "echo -e \"---\nsmtp:\n  server: $PLUGIN_HOST\n  port: 587\n  starttls: True\n  authentication: True\n  user: $PLUGIN_USERNAME\n  password: $PLUGIN_PASSWORD\nemail:\n  from: $PLUGIN_FROMADDRESS\n  to:\n    - $PLUGIN_RECIPIENTS\nfirefly-url: '$PLUGIN_FIREFLYURL'\naccesstoken: '$PLUGIN_FIREFLYTOKEN'\ncurrency: 'EUR'\" > config.yaml"
 - name: send mail
   image: python
   commands:
   - cat config.yaml
   - pip install -r requirements.txt
   - python monthly-report.py
+  ports:
+  - 587
   depends_on:
   - configure mail
 
